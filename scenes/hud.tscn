@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3guu2m4884xm"]
+
+[ext_resource type="Script" uid="uid://cr5i17s6r1502" path="res://scripts/hud.gd" id="1_ahhtf"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_ahhtf")
+
+[node name="ScoreLabel" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -51.0
+offset_right = 51.0
+offset_bottom = 34.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "Score：0"

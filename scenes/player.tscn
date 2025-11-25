@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://udit1k8ej22i"]
+
+[ext_resource type="Texture2D" uid="uid://d3y46fobn7ksq" path="res://assets/kenney_space-shooter-redux/PNG/playerShip3_green.png" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://37dx5fkneo4x" path="res://scripts/player.gd" id="1_g2els"]
+
+[node name="Player" type="Area2D"]
+script = ExtResource("1_g2els")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(15, 16)
+scale = Vector2(0.6530612, 0.67333335)
+texture = ExtResource("1_3vyb7")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(14.878941, 16.049997)
+scale = Vector2(0.6630487, 0.67516434)
+polygon = PackedVector2Array(-4, -38, 4, -38, 10, -25, 48, 20, 48, 29, 39, 30, 38, 28, 22, 28, 13, 38, -15, 38, -23, 28, -41, 28, -41, 29, -49, 29, -49, 22, -10, -23)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
