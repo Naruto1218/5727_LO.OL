@@ -1,0 +1,30 @@
+[gd_scene load_steps=10 format=3 uid="uid://dtdlknq7apnum"]
+
+[ext_resource type="Script" uid="uid://cnmlcxokmogtx" path="res://Scripts/backgroud.gd" id="1_esivr"]
+[ext_resource type="Texture2D" uid="uid://dvf4ljrjbarou" path="res://AssetBundle/Sprites/background.png" id="1_l56tn"]
+[ext_resource type="PackedScene" uid="uid://cf8yhx4ya7ses" path="res://Scenes/yasuo.tscn" id="2_5rati"]
+[ext_resource type="PackedScene" uid="uid://gs3sestybpea" path="res://Scenes/attach1blue.tscn" id="3_gd14y"]
+[ext_resource type="PackedScene" uid="uid://dinvu8o3o72t5" path="res://Scenes/attach2purple.tscn" id="3_xo0oj"]
+[ext_resource type="PackedScene" uid="uid://qosmx8wpk5op" path="res://Scenes/attach2green.tscn" id="4_qe55g"]
+[ext_resource type="PackedScene" uid="uid://c4yxl2tlik2i6" path="res://Scenes/attach1red.tscn" id="5_qe55g"]
+[ext_resource type="PackedScene" uid="uid://bgjswadxshojb" path="res://Scenes/attach3white.tscn" id="7_bvwwm"]
+[ext_resource type="PackedScene" uid="uid://c6gk3cmq43myk" path="res://Scenes/attach4red.tscn" id="7_qe55g"]
+
+[node name="Dodge" type="Node2D" node_paths=PackedStringArray("player")]
+script = ExtResource("1_esivr")
+player = NodePath("player")
+attack1_scene = ExtResource("3_gd14y")
+attack2_scene = ExtResource("5_qe55g")
+attack3_scene = ExtResource("4_qe55g")
+attack4_scene = ExtResource("3_xo0oj")
+attack5_scene = ExtResource("7_bvwwm")
+attack6_scene = ExtResource("7_qe55g")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_l56tn")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.28, 1.28)
+
+[node name="player" parent="." instance=ExtResource("2_5rati")]
+z_index = 505

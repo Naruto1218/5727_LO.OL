@@ -1,0 +1,74 @@
+[gd_scene load_steps=10 format=3 uid="uid://gs3sestybpea"]
+
+[ext_resource type="Script" uid="uid://02y7skyrfdpi" path="res://Scripts/attach_1_blue.gd" id="1_75kt7"]
+[ext_resource type="Texture2D" uid="uid://ygbdo3sxgm3g" path="res://AssetBundle/Retro Impact Effect Pack 5 C.png" id="1_u0gt5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_75kt7"]
+atlas = ExtResource("1_u0gt5")
+region = Rect2(320, 320, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qkjh5"]
+atlas = ExtResource("1_u0gt5")
+region = Rect2(256, 320, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7gk08"]
+atlas = ExtResource("1_u0gt5")
+region = Rect2(192, 320, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4gsid"]
+atlas = ExtResource("1_u0gt5")
+region = Rect2(128, 320, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lwc54"]
+atlas = ExtResource("1_u0gt5")
+region = Rect2(64, 320, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_15egn"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_75kt7")
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_75kt7")
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_75kt7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qkjh5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7gk08")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4gsid")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lwc54")
+}],
+"loop": false,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u0gt5"]
+radius = 30.016663
+
+[node name="Attach1" type="Area2D"]
+script = ExtResource("1_75kt7")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_15egn")
+autoplay = "default"
+frame = 8
+frame_progress = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_u0gt5")
