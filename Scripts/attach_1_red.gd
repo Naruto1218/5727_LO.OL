@@ -10,6 +10,8 @@ extends Area2D
 
 var can_damage: bool = false                           # 是否已经可以伤害角色
 func _ready() -> void:
+	monitoring = false
+	monitorable = true
 # 连接碰撞信号
 	body_entered.connect(_on_body_entered)
 
@@ -41,11 +43,8 @@ func _on_frame_changed() -> void:
 	# frame 从 0 开始：0,1,2,3,4 是前 5 帧，不伤害
 	if anim.frame >= safe_frames:
 		can_damage = true	
+		monitoring = true
 func _on_body_entered(body: Node2D) -> void:
-	# 如果还在“无伤害前摇”阶段，直接返回
-	if not can_damage:
-		return
-
 	# 建议玩家节点在 _ready() 里加 add_to_group("player")
 	if body.is_in_group("player"):
 		if body.has_method("take_damage"):

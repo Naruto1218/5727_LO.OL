@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://cf8yhx4ya7ses"]
+[gd_scene load_steps=35 format=3 uid="uid://cf8yhx4ya7ses"]
 
 [ext_resource type="Script" uid="uid://d3x1rik8ule8h" path="res://Scripts/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://dgyixxntr3ysq" path="res://AssetBundle/Sprites/Swordsman_lvl1_Run_with_shadow.png" id="2_6t5aa"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://c2prhdf50ptkj" path="res://AssetBundle/Sprites/yasuo/小小亚索 (5).png" id="8_h4iuc"]
 [ext_resource type="Texture2D" uid="uid://w1xo5nphy6i5" path="res://AssetBundle/Sprites/yasuo/小小亚索 (6).png" id="9_fd4e3"]
 [ext_resource type="Texture2D" uid="uid://dpeqdrhqmprq5" path="res://AssetBundle/Sprites/yasuo/小小亚索 (7).png" id="10_qqcod"]
+[ext_resource type="Texture2D" uid="uid://pupefp0a0cdn" path="res://AssetBundle/Sprites/healthbar/Life GUI.png" id="11_ewrq6"]
+[ext_resource type="Texture2D" uid="uid://ygbdo3sxgm3g" path="res://AssetBundle/Retro Impact Effect Pack 5 C.png" id="12_cduuo"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vgqql"]
 atlas = ExtResource("2_6t5aa")
@@ -139,11 +141,27 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_i8ax6"]
 size = Vector2(28, 66)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_cduuo"]
+atlas = ExtResource("11_ewrq6")
+region = Rect2(1, 68, 61, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ewrq6"]
+atlas = ExtResource("11_ewrq6")
+region = Rect2(1, 60, 61, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qhem7"]
+atlas = ExtResource("11_ewrq6")
+region = Rect2(1, 63, 61, 4)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xwh63"]
+atlas = ExtResource("12_cduuo")
+region = Rect2(273, 1041, 30, 30)
+
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_cvnsp")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -9.536743e-07)
+position = Vector2(0, -5.684342e-14)
 scale = Vector2(0.16632232, 0.1582185)
 sprite_frames = SubResource("SpriteFrames_pu2lt")
 animation = &"yasuo"
@@ -154,3 +172,23 @@ frame_progress = 0.05473673
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(5, 5)
 shape = SubResource("RectangleShape2D_i8ax6")
+
+[node name="HealthBar" type="Node2D" parent="."]
+
+[node name="Back" type="Sprite2D" parent="HealthBar"]
+position = Vector2(5, -46)
+texture = SubResource("AtlasTexture_cduuo")
+
+[node name="HP" type="Sprite2D" parent="HealthBar"]
+z_index = 12
+position = Vector2(5, -48)
+texture = SubResource("AtlasTexture_ewrq6")
+
+[node name="MP" type="Sprite2D" parent="HealthBar"]
+position = Vector2(5, -44)
+texture = SubResource("AtlasTexture_qhem7")
+
+[node name="Shield" type="Sprite2D" parent="."]
+position = Vector2(4.9999995, 0.99999905)
+scale = Vector2(2.766667, 2.766667)
+texture = SubResource("AtlasTexture_xwh63")

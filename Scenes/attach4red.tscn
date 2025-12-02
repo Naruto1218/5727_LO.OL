@@ -55,7 +55,7 @@ animations = [{
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_raj8t"]
 
-[node name="Attach1" type="Area2D"]
+[node name="Attach6" type="Area2D"]
 script = ExtResource("1_1xl33")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
