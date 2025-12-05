@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
 @export var move_speed: float = 200.0  # 角色移动速度（像素/秒）
-
 @export var hp_segments: int = 10      # 血条分成多少份（10格）
 @export var max_hp: int = 10           # 最大血量
 var target_pos: Vector2                # 要移动到的目标位置
@@ -9,7 +8,7 @@ var hp: int                            # 当前血量
 
 # --- MP / 护盾相关 ---
 @export var max_mp: float = 100.0      # MP 最大值
-@export var mp_charge_rate: float = 20.0  # 每秒充能多少 MP（按住走路时）
+@export var mp_charge_rate: float = 10.0  # 每秒充能多少 MP（按住走路时）
 var mp: float = 0.0                    # 当前 MP
 var shield_active: bool = false        # 护盾是否激活
 
@@ -30,10 +29,32 @@ var _mp_full_region: Rect2
 
 # --- 冲刺（Dash）相关 ---
 @export var dash_speed: float = 500.0      # 冲刺速度
-@export var dash_distance: float = 120.0   # 最大冲刺距离（像素）
+@export var dash_distance: float = 100.0   # 最大冲刺距离（像素）
 var is_dashing: bool = false               # 是否正在冲刺
 var dash_direction: Vector2 = Vector2.ZERO # 冲刺方向
 var dash_distance_left: float = 0.0        # 冲刺剩余距离
+
+@export var dash_cooldown: float = 5.0  # 冲刺冷却时间（秒）
+var dash_cooldown_timer: float = 0.0
+var can_dash: bool = true
+
+# 添加dash信号定义：
+signal dash_cooldown_started(cooldown_time: float)
+signal dash_cooldown_updated(remaining_time: float, cooldown_time: float)
+signal dash_cooldown_finished()
+
+# --- 死亡信号 ---
+signal player_died
+
+# 添加发射信号的辅助函数：
+func emit_dash_cooldown_started():
+	dash_cooldown_started.emit(dash_cooldown)
+
+func emit_dash_cooldown_updated():
+	dash_cooldown_updated.emit(dash_cooldown_timer, dash_cooldown)
+
+func emit_dash_cooldown_finished():
+	dash_cooldown_finished.emit()
 
 
 func _ready() -> void:
@@ -71,15 +92,29 @@ func _ready() -> void:
 	shield_active = false
 	shield.visible = false
 
+	dash_cooldown_timer = 0.0
+	can_dash = true
+
+	# 连接死亡信号到游戏控制器
+	player_died.connect(_on_player_died)
+
 	update_hp_bar()
 	update_mp_bar()
 
+func _on_player_died():
+	# 可以在这里添加玩家死亡后的本地效果
+	print("玩家死亡信号已发送")
+	
+	# 可选：禁用玩家控制
+	set_process_input(false)
+	set_physics_process(false)
+	velocity = Vector2.ZERO
 
 # 处理输入：鼠标 + 停止
 func _unhandled_input(event: InputEvent) -> void:
 	# 鼠标左键：设置移动目标
 	if event is InputEventMouseButton \
-			and event.button_index == MOUSE_BUTTON_LEFT \
+			and event.button_index == MOUSE_BUTTON_RIGHT \
 			and event.pressed:
 		target_pos = get_global_mouse_position()
 
@@ -91,7 +126,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			target_pos = global_position
 			velocity = Vector2.ZERO
 		elif event.keycode == KEY_E:
-			start_dash()
+			if can_dash:
+				start_dash()
 
 
 
@@ -140,7 +176,16 @@ func _physics_process(delta: float) -> void:
 		# MP 满了且还没有护盾 -> 激活护盾
 		if (not shield_active) and mp >= max_mp:
 			activate_shield()
-
+			
+	if not can_dash:
+		dash_cooldown_timer -= delta
+		if dash_cooldown_timer <= 0:
+			dash_cooldown_timer = 0
+			can_dash = true
+			emit_dash_cooldown_finished()
+			print("Dash ready")
+	# 发出冷却更新信号（用于UI更新）
+	emit_dash_cooldown_updated()
 
 # 更新 HP 条
 func update_hp_bar() -> void:
@@ -224,7 +269,44 @@ func take_damage(amount: int = 1) -> void:
 
 func die() -> void:
 	print("Player Dead")
+	player_died.emit()  # 发射死亡信号
 	# 这里可以加死亡动画、游戏结束逻辑等
+
+# --- 新增：重置玩家状态的方法 ---
+func reset_player():
+	print("重置玩家状态")
+	
+	# 重置位置
+	global_position = Vector2(0, 0)  # 设置一个初始位置，可以根据需要调整
+	target_pos = global_position
+	velocity = Vector2.ZERO
+
+	# 重置血量
+	hp = max_hp
+	update_hp_bar()
+	
+	# 重置MP和护盾
+	mp = 0.0
+	shield_active = false
+	shield.visible = false
+	update_mp_bar()
+
+	# 重置冲刺状态
+	is_dashing = false
+	dash_distance_left = 0.0
+	can_dash = true
+	dash_cooldown_timer = 0.0
+
+	# 重置动画和颜色
+	if sprite:
+		sprite.modulate.a = 1.0
+		sprite.modulate = Color(1, 1, 1, 1)
+	
+	# 重新激活输入
+	set_process_input(true)
+	set_physics_process(true)
+
+	print("玩家状态已重置")
 
 func start_dash() -> void:
 	# 已在冲刺中就不重复开始
@@ -253,9 +335,12 @@ func start_dash() -> void:
 	# 没有距离可以冲，就不开始
 	if dash_distance_left <= 0.0:
 		return
-
+	
 	is_dashing = true
-
+	can_dash = false
+	dash_cooldown_timer = dash_cooldown
+	
+	emit_dash_cooldown_started()
 
 # 受伤闪烁效果：快速改变透明度几次
 func flash_on_hit() -> void:
@@ -268,3 +353,12 @@ func flash_on_hit() -> void:
 
 		sprite.modulate.a = 1.0
 		await get_tree().create_timer(interval).timeout
+
+# 添加获取冷却状态的函数（供UI调用）：
+func get_dash_cooldown_info() -> Dictionary:
+	return {
+		"can_dash": can_dash,
+		"remaining_time": dash_cooldown_timer,
+		"total_cooldown": dash_cooldown,
+		"cooldown_ratio": 1.0 - (dash_cooldown_timer / dash_cooldown) if dash_cooldown > 0 else 1.0
+	}

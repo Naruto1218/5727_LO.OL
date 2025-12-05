@@ -4,10 +4,10 @@ extends Area2D
 @export var offset_max: Vector2 = Vector2(120,  80)
 @export var anim_name: StringName = "default"           # 动画名字
 @export var damage: int = 1                            # 造成多少伤害
-@export var safe_frames: int = 5    
+@export var safe_frames: int = 5   
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 				   # 前多少帧不造成伤害
-
+ 
 var can_damage: bool = false                           # 是否已经可以伤害角色
 func _ready() -> void:
 	monitoring = false
@@ -29,6 +29,7 @@ func start(player: Node2D) -> void:
 	# 3. 播放动画并在播放完后自动删除
 	if anim:
 		can_damage = false               # 每次出现先重置为无伤害
+		anim.speed_scale = 1.5
 		anim.play(anim_name)
 		anim.frame_changed.connect(_on_frame_changed)
 		_auto_free()

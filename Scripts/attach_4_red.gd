@@ -1,7 +1,7 @@
 extends Area2D
 
 # 攻击飞行速度（像素/秒）
-@export var speed: float = 300.0
+@export var speed: float = 600.0
 
 @export var damage: int = 1          # 这一发子弹造成多少伤害
 

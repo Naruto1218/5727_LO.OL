@@ -27,10 +27,10 @@ func start(player: Node2D) -> void:
 	# 2. 设置形状 / 大小（比如根据玩家距离、随机大小等）
 	#    这里简单示例：放大一点：
 	scale = Vector2(2, 30)  # 你可以改成根据规则计算
-
 	# 3. 播放动画并在播放完后自动删除
 	if anim:
 		can_damage = false               # 每次出现先重置为无伤害
+		anim.speed_scale = 1
 		anim.play(anim_name)
 		anim.frame_changed.connect(_on_frame_changed)
 		_auto_free()

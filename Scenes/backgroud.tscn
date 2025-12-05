@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dtdlknq7apnum"]
+[gd_scene load_steps=17 format=3 uid="uid://dtdlknq7apnum"]
 
 [ext_resource type="Script" uid="uid://cnmlcxokmogtx" path="res://Scripts/backgroud.gd" id="1_esivr"]
 [ext_resource type="Texture2D" uid="uid://dvf4ljrjbarou" path="res://AssetBundle/Sprites/background.png" id="1_l56tn"]
@@ -9,6 +9,23 @@
 [ext_resource type="PackedScene" uid="uid://c4yxl2tlik2i6" path="res://Scenes/attach1red.tscn" id="5_qe55g"]
 [ext_resource type="PackedScene" uid="uid://bgjswadxshojb" path="res://Scenes/attach3white.tscn" id="7_bvwwm"]
 [ext_resource type="PackedScene" uid="uid://c6gk3cmq43myk" path="res://Scenes/attach4red.tscn" id="7_qe55g"]
+[ext_resource type="Texture2D" uid="uid://cjidrgeu68q86" path="res://AssetBundle/Sprites/e.png" id="10_bvwwm"]
+[ext_resource type="Script" uid="uid://fxr6n00kwn6w" path="res://Scripts/dash_skill_ui.gd" id="11_1d2q8"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1d2q8"]
+font_size = 89
+
+[sub_resource type="Theme" id="Theme_xvse6"]
+default_font_size = 54
+
+[sub_resource type="LabelSettings" id="LabelSettings_xvse6"]
+font_size = 54
+
+[sub_resource type="Theme" id="Theme_1d2q8"]
+default_font_size = 54
+
+[sub_resource type="Theme" id="Theme_tm0p4"]
+default_font_size = 54
 
 [node name="Dodge" type="Node2D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_esivr")
@@ -28,3 +45,194 @@ zoom = Vector2(1.28, 1.28)
 
 [node name="player" parent="." instance=ExtResource("2_5rati")]
 z_index = 505
+
+[node name="UICanvas" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="SkillBar" type="Control" parent="UICanvas"]
+custom_minimum_size = Vector2(0, -80)
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="DashSkillUI" type="TextureRect" parent="UICanvas/SkillBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -37.5
+offset_top = -80.0
+offset_right = 37.5
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_bvwwm")
+expand_mode = 1
+script = ExtResource("11_1d2q8")
+
+[node name="CooldownOverlay" type="ColorRect" parent="UICanvas/SkillBar/DashSkillUI"]
+visible = false
+layout_mode = 1
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0, 0, 0, 0.53333336)
+
+[node name="CooldownText" type="Label" parent="UICanvas/SkillBar/DashSkillUI"]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "E"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartMenu" type="CanvasLayer" parent="."]
+
+[node name="MenuContainer" type="Control" parent="StartMenu"]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -499.5
+offset_top = -499.5
+offset_right = 499.5
+offset_bottom = 499.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Background" type="ColorRect" parent="StartMenu/MenuContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -25.0
+offset_right = 100.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+
+[node name="MenuItems" type="VBoxContainer" parent="StartMenu/MenuContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -77.0
+offset_right = 100.0
+offset_bottom = 77.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="StartMenu/MenuContainer/MenuItems"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+text = "Kill Suor
+
+"
+label_settings = SubResource("LabelSettings_1d2q8")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartButton" type="Button" parent="StartMenu/MenuContainer/MenuItems"]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 2
+theme = SubResource("Theme_xvse6")
+text = "Start"
+
+[node name="GameOverMenu" type="CanvasLayer" parent="."]
+
+[node name="GameOverContainer" type="Control" parent="GameOverMenu"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Background" type="ColorRect" parent="GameOverMenu/GameOverContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+
+[node name="MenuItems" type="VBoxContainer" parent="GameOverMenu/GameOverContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -57.0
+offset_top = -46.5
+offset_right = 57.0
+offset_bottom = 46.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="GameOverMenu/GameOverContainer/MenuItems"]
+layout_mode = 2
+text = "     GG！！LOL！！
+You Killed YaSuo！！
+
+"
+label_settings = SubResource("LabelSettings_xvse6")
+
+[node name="GameOverLable" type="Label" parent="GameOverMenu/GameOverContainer/MenuItems"]
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="GameOverMenu/GameOverContainer/MenuItems"]
+layout_mode = 2
+theme = SubResource("Theme_1d2q8")
+text = "Restart"
+
+[node name="BackToMenuButton" type="Button" parent="GameOverMenu/GameOverContainer/MenuItems"]
+layout_mode = 2
+theme = SubResource("Theme_tm0p4")
+text = "Back to Menu"
+
+[connection signal="player_died" from="player" to="." method="_on_player_player_died"]
+[connection signal="player_died" from="player" to="." method="_on_player_died"]
+[connection signal="pressed" from="StartMenu/MenuContainer/MenuItems/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="GameOverMenu/GameOverContainer/MenuItems/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="GameOverMenu/GameOverContainer/MenuItems/BackToMenuButton" to="." method="_on_back_to_menu_button_pressed"]
