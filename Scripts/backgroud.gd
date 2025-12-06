@@ -1,5 +1,12 @@
 extends Node2D
 
+@onready var select_sfx: AudioStreamPlayer2D = $StartMenu/select
+@onready var death: AudioStreamPlayer2D = $death
+
+# 计分板相关：ScoreLabel 下有 score 和 count 两个 Label
+@onready var score_root: CanvasLayer = $ScoreLabel
+@onready var score_count_label: Label = $ScoreLabel/count
+
 @export var player: Node2D
 
 @export var attack1_scene: PackedScene
@@ -21,6 +28,8 @@ extends Node2D
 # --- game status ---
 @onready var start_menu: Control = $StartMenu/MenuContainer
 @onready var game_over_menu: Control = $GameOverMenu/GameOverContainer
+@onready var final_score: Label = $GameOverMenu/GameOverContainer/MenuItems/Score
+
 #@onready var start_menu: CanvasLayer = $StartMenu
 #@onready var game_over_menu: CanvasLayer = $GameOverMenu
 
@@ -30,11 +39,13 @@ var game_started: bool = false
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
+# --- 计分相关变量 ---
+var score_value: int = 0           # 当前分数
+var score_time_acc: float = 0.0    # 用来累积 delta 实现“每秒+1”
+
 func _ready() -> void:
 	rng.randomize()
 	
-	# 初始状态：显示开始菜单
-	# set_game_state(GameState.MENU)
 	# 初始状态：显示开始菜单，隐藏游戏结束菜单
 	if start_menu:
 		start_menu.visible = true
@@ -46,11 +57,16 @@ func _ready() -> void:
 		dash_skill_ui.visible = false
 		print("E技能图标初始隐藏")
 	
+	# 初始隐藏计分板
+	if score_root:
+		score_root.visible = false
+	_reset_score_ui()  # 确保 count 显示为 0
+	
 	# 暂停游戏逻辑
 	game_started = false
 	set_process(false)
 	
-	generate_attack_schedule(120)  # 生成 60 秒的攻击时间表
+	generate_attack_schedule(120)  # 生成 120 秒的攻击时间表
 	
 	# 确保UI引用正确
 	if dash_skill_ui:
@@ -64,9 +80,7 @@ func _ready() -> void:
 	# 连接玩家死亡信号
 	if player:
 		player.player_died.connect(on_player_died)
-	#print(attack1_times)
-	#print(attack2_times)
-	# ...调试用
+
 
 func set_game_state(new_state: GameState):
 	current_state = new_state
@@ -82,6 +96,11 @@ func set_game_state(new_state: GameState):
 			
 			if dash_skill_ui:
 				dash_skill_ui.visible = false
+			
+			# 隐藏计分板并重置分数
+			if score_root:
+				score_root.visible = false
+			_reset_score()     # 回到菜单，分数清零
 			
 			# 暂停游戏逻辑
 			game_started = false
@@ -115,6 +134,10 @@ func set_game_state(new_state: GameState):
 			if dash_skill_ui:
 				dash_skill_ui.visible = true
 			
+			# 显示计分板，并重置分数（新的一局从0开始）
+			if score_root:
+				score_root.visible = true
+			_reset_score()
 			
 			# 开始游戏逻辑
 			game_started = true
@@ -131,23 +154,39 @@ func set_game_state(new_state: GameState):
 			
 		GameState.GAME_OVER:
 			print("显示游戏结束菜单")
+			final_score.text=str("Your Score: ", score_value)
 			# 显示游戏结束菜单
 			if start_menu:
 				start_menu.visible = false
 			if game_over_menu:
 				game_over_menu.visible = true
-				# 可以在这里更新得分等信息
+				# 可以在这里更新得分等信息（比如显示最终分数）
 			
 			if dash_skill_ui:
 				dash_skill_ui.visible = false
 			
 			_cleanup_all_attacks()
 			
+			# 不重置分数，保留这局的分数给玩家看
+			# 计分板保持当前显示状态（PLAYING 时已经显示）
+
 			# 停止游戏逻辑
 			game_started = false
 			set_process(false)
 			
 			print("游戏状态：结束")
+
+
+# --- 计分相关函数 ---
+func _reset_score():
+	score_value = 0
+	score_time_acc = 0.0
+	_reset_score_ui()
+
+func _reset_score_ui():
+	if score_count_label:
+		score_count_label.text = str(score_value)
+
 
 func _cleanup_all_attacks():
 	var count = 0
@@ -254,20 +293,17 @@ var idx5 := 0
 var idx6 := 0
 
 
-#func _ready() -> void:
-	#randomize()
-	#attack1_times.sort()
-	#attack2_times.sort()
-	#attack3_times.sort()
-	#attack4_times.sort()
-	#attack5_times.sort()
-	#attack6_times.sort()
-
-
 func _process(delta: float) -> void:
 	if not game_started or current_state != GameState.PLAYING:
 		return
 	t += delta
+
+	# 每秒加一分的计分逻辑
+	score_time_acc += delta
+	while score_time_acc >= 1.0:
+		score_time_acc -= 1.0
+		score_value += 1
+		_reset_score_ui()
 
 	_check_spawn(attack1_scene, attack1_times, 1)
 	_check_spawn(attack2_scene, attack2_times, 2)
@@ -275,6 +311,7 @@ func _process(delta: float) -> void:
 	_check_spawn(attack4_scene, attack4_times, 4)
 	_check_spawn(attack5_scene, attack5_times, 5)
 	_check_spawn(attack6_scene, attack6_times, 6)
+
 
 # 添加重置游戏状态的函数
 func reset_game_state():
@@ -306,6 +343,7 @@ func reset_game_state():
 		print("  玩家状态已重置")
 	
 	print("=== 游戏状态重置完成 ===")
+
 
 func _check_spawn(scene: PackedScene, times: Array[float], which: int) -> void:
 	if scene == null:
@@ -342,9 +380,12 @@ func _check_spawn(scene: PackedScene, times: Array[float], which: int) -> void:
 			5: idx5 += 1
 			6: idx6 += 1
 
+
 # --- 按钮信号处理 ---
 func _on_start_button_pressed():
 	print("开始游戏按钮被点击")
+	if select_sfx:
+		select_sfx.play()
 	set_game_state(GameState.PLAYING)
 
 func _on_restart_button_pressed():
@@ -358,4 +399,6 @@ func _on_back_to_menu_button_pressed():
 # 玩家死亡时调用
 func on_player_died():
 	print("玩家死亡，显示游戏结束菜单")
+	if death:
+		death.play()
 	set_game_state(GameState.GAME_OVER)

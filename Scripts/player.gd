@@ -1,4 +1,8 @@
 extends CharacterBody2D
+@onready var hurted: AudioStreamPlayer2D = $hurted
+@onready var move1: AudioStreamPlayer2D = $move1
+@onready var move2: AudioStreamPlayer2D = $move2
+@onready var edash: AudioStreamPlayer2D = $edash
 
 @export var move_speed: float = 200.0  # 角色移动速度（像素/秒）
 @export var hp_segments: int = 10      # 血条分成多少份（10格）
@@ -20,7 +24,6 @@ var shield_active: bool = false        # 护盾是否激活
 var _full_region: Rect2
 
 # MP 条
-@onready var mp_bar: Node2D = $MPBar
 @onready var mp_fill: Sprite2D = $HealthBar/MP
 var _mp_full_region: Rect2
 
@@ -45,7 +48,7 @@ signal dash_cooldown_finished()
 
 # --- 死亡信号 ---
 signal player_died
-
+var move_click_counter: int = 0  
 # 添加发射信号的辅助函数：
 func emit_dash_cooldown_started():
 	dash_cooldown_started.emit(dash_cooldown)
@@ -109,6 +112,8 @@ func _on_player_died():
 	set_process_input(false)
 	set_physics_process(false)
 	velocity = Vector2.ZERO
+	
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 # 处理输入：鼠标 + 停止
 func _unhandled_input(event: InputEvent) -> void:
@@ -117,7 +122,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			and event.button_index == MOUSE_BUTTON_RIGHT \
 			and event.pressed:
 		target_pos = get_global_mouse_position()
-
+		move_click_counter+=1
+		if move_click_counter%40==0:
+			if rng.randi_range(0,1)%2==0:
+				move1.play()
+			else:
+				move2.play()
 	# 按下 S 键：立刻停止移动
 	elif event is InputEventKey \
 			and event.pressed \
@@ -250,7 +260,7 @@ func take_damage(amount: int = 1) -> void:
 		consume_shield()
 		print("Shield blocked the damage!")
 		return
-
+	hurted.play()
 	if hp <= 0:
 		return
 
@@ -312,7 +322,7 @@ func start_dash() -> void:
 	# 已在冲刺中就不重复开始
 	if is_dashing:
 		return
-
+	edash.play()
 	# 冲刺方向：优先用当前移动方向，其次用目标方向
 	var dir: Vector2 = velocity
 	if dir.length() < 0.1:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://cf8yhx4ya7ses"]
+[gd_scene load_steps=39 format=3 uid="uid://cf8yhx4ya7ses"]
 
 [ext_resource type="Script" uid="uid://d3x1rik8ule8h" path="res://Scripts/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://dgyixxntr3ysq" path="res://AssetBundle/Sprites/Swordsman_lvl1_Run_with_shadow.png" id="2_6t5aa"]
@@ -12,6 +12,10 @@
 [ext_resource type="Texture2D" uid="uid://dpeqdrhqmprq5" path="res://AssetBundle/Sprites/yasuo/小小亚索 (7).png" id="10_qqcod"]
 [ext_resource type="Texture2D" uid="uid://pupefp0a0cdn" path="res://AssetBundle/Sprites/healthbar/Life GUI.png" id="11_ewrq6"]
 [ext_resource type="Texture2D" uid="uid://ygbdo3sxgm3g" path="res://AssetBundle/Retro Impact Effect Pack 5 C.png" id="12_cduuo"]
+[ext_resource type="AudioStream" uid="uid://c8w5m7wbqb0ca" path="res://voice/Yasuo_Original_EDash_2.ogg" id="13_2atgj"]
+[ext_resource type="AudioStream" uid="uid://jau3ihaafs68" path="res://voice/Yasuo_Original_Move_0.ogg" id="14_77iyt"]
+[ext_resource type="AudioStream" uid="uid://33wc4w0btkg7" path="res://voice/Yasuo_Original_Move_6.ogg" id="15_wynyk"]
+[ext_resource type="AudioStream" uid="uid://cpmmq4oxjxtgt" path="res://voice/Yasuo_Original_Death_0.ogg" id="16_77iyt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vgqql"]
 atlas = ExtResource("2_6t5aa")
@@ -192,3 +196,15 @@ texture = SubResource("AtlasTexture_qhem7")
 position = Vector2(4.9999995, 0.99999905)
 scale = Vector2(2.766667, 2.766667)
 texture = SubResource("AtlasTexture_xwh63")
+
+[node name="edash" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("13_2atgj")
+
+[node name="move1" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("14_77iyt")
+
+[node name="move2" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("15_wynyk")
+
+[node name="hurted" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("16_77iyt")

@@ -224,13 +224,6 @@ You Killed YaSuo！！
 "
 label_settings = SubResource("LabelSettings_xvse6")
 
-[node name="Score" type="Label" parent="GameOverMenu/GameOverContainer/MenuItems"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "                 "
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="GameOverLable" type="Label" parent="GameOverMenu/GameOverContainer/MenuItems"]
 layout_mode = 2
 
